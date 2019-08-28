@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -12,37 +14,52 @@ import (
 //  toPort is Port address of server to connect to
 //  response is value unassignable by user, only read
 type Node struct {
-	toIP     string
-	toPort   uint16
-	response string
+	toIP       string
+	toPort     uint16
+	response   string
+	connection net.Conn
 }
 
 // GetResponse Gets the response attribute of the Node struct
-func (nd Node) GetResponse() string {
-	return nd.response
+func (nd Node) GetResponse() uint64 {
+	if nnc, err := strconv.Atoi(strings.TrimSpace(nd.response)); err == nil {
+		nnc := uint64(nnc)
+		nd.response = ""
+		return nnc
+	}
+	nd.response = ""
+	fmt.Println("is not an integer.")
+	return 0
+}
+
+// SendResponse Sends the response attribute of the Node struct over the net
+func (nd Node) SendResponse(nnc uint64) {
+	fmt.Printf("sending to net nnc is %d\n", nnc)
+	fmt.Fprintf(nd.connection, fmt.Sprintf("%d", nnc))
+}
+
+// ResponseEmpty checks if the response is empty string
+func (nd Node) ResponseEmpty() bool {
+	return nd.response == ""
 }
 
 // NewNode Wrapper for creation of Node struct
 func NewNode(toIP string, toPort uint16) Node {
-	return Node{toIP, toPort, ""}
+	return Node{toIP, toPort, "", nil}
 }
 
 // Connect connects node to remote server via TCP
 func (nd *Node) Connect() {
 	// connect to this socket
-	conn, _ := net.Dial("tcp", fmt.Sprintf("%s:%d", nd.toIP, nd.toPort))
+	nd.connection, _ = net.Dial("tcp", fmt.Sprintf("%s:%d", nd.toIP, nd.toPort))
+	fmt.Fprintf(nd.connection, "Connect\n")
 	for {
-		// read in input from stdin
-		// reader := bufio.NewReader(os.Stdin)
-		// fmt.Print("Text to send: ")
-		// text, _ := reader.ReadString('\n')
-		// // send to socket
-		// fmt.Fprintf(conn, text+"\n")
-		fmt.Fprintf(conn, "Connect\n")
 		// listen for reply
-		message, _ := bufio.NewReader(conn).ReadString('\n')
+		fmt.Println("Shall read from server: ")
+		message, _ := bufio.NewReader(nd.connection).ReadString('\n')
+		fmt.Println("Did read from server: " + message)
 		nd.response = message
-		fmt.Print("Message from server: " + message)
+		fmt.Println("Message from server: " + message)
 		time.Sleep(1 * time.Second)
 	}
 }

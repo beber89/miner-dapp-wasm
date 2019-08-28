@@ -15,9 +15,14 @@ server.on('connection', function(sock) {
 
     sock.on('data', function(data) {
         console.log('DATA ' + sock.remoteAddress + ': ' + data);
+        let cmp = Buffer.compare(data, Buffer.from('Connect\n'));
         // Write the data back to all the connected, the client will receive it as data from the server
-        sockets.forEach(function(sock, index, array) {
-            sock.write(sock.remoteAddress + ':' + sock.remotePort + " said " + data + '\n');
+        sockets.forEach(function(s, index, array) {
+            if (cmp != 0 && s!= sock) {
+                console.log('send data to ' + s.remotePort + ': ' + data);
+                s.write(data+'\n');
+                // s.write(s.remoteAddress + ':' + s.remotePort + " said " + data + '\n');
+            }
         });
     });
 
@@ -30,24 +35,3 @@ server.on('connection', function(sock) {
         console.log('CLOSED: ' + sock.remoteAddress + ' ' + sock.remotePort);
     });
 });
-
-
-
-// const http = require('http');
-
-// const hostname = '127.0.0.1';
-// const port = 8081;
-
-// const server = http.createServer((req, res) => {
-//   console.log(`received request`);
-//   res.statusCode = 200;
-//   res.setHeader('Content-Type', 'text/html');
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   console.log(`writing response`);
-//   res.write('<html><body><p>This is home Page.</p></body></html>');
-//   res.end();
-// });
-
-// server.listen(port, hostname, () => {
-//   console.log(`Server running at http://${hostname}:${port}/`);
-// });
