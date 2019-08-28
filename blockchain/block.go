@@ -3,8 +3,9 @@ package blockchain
 import (
 	"crypto/sha256"
 	"fmt"
+	"math/rand"
 
-	"github.com/beber89/miner-dapp-wasm/fabricnet"
+	"github.com/beber89/miner-dapp-wasm/chainfabric"
 )
 
 // blockIDGenerator is meant to emulate as a static class member for Block struct
@@ -13,7 +14,7 @@ type blockIDGenerator struct {
 }
 
 type observer struct {
-	node fabricnet.Node
+	node *chainfabric.Node
 }
 
 var instance blockIDGenerator
@@ -22,7 +23,8 @@ var observerInstance observer
 // GetObserver constructor for observer
 func GetObserver() observer {
 	if observerInstance == (observer{}) {
-		observerInstance = observer{fabricnet.NewNode("127.0.0.1", 8081)}
+		nd := chainfabric.NewNode("127.0.0.1", 8081)
+		observerInstance = observer{&nd}
 		go observerInstance.node.Connect()
 	}
 	return observerInstance
@@ -131,7 +133,7 @@ func (blk *Block) tryNonce(nnc uint64) bool {
 }
 
 func (blk *Block) mine() {
-	for nnc := uint64(0); nnc <= ^uint64(0); nnc++ {
+	for nnc := uint64(0); nnc <= ^uint64(0); nnc = nnc + uint64(rand.Intn(5)+1) {
 		if !blk.tryNonce(nnc) {
 			if !GetObserver().node.ResponseEmpty() {
 				if blk.tryNonce(GetObserver().node.GetResponse()) {

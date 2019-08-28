@@ -8,7 +8,7 @@ import (
 
 func main() {
 	fmt.Println("Hello, WebAssembly!")
-	// var bobNode = fabricnet.NewNode("127.0.0.1", 8081)
+	// var bobNode = chainfabric.NewNode("127.0.0.1", 8081)
 	// go bobNode.Connect()
 
 	// time.Sleep(5 * time.Second)
