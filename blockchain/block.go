@@ -17,8 +17,10 @@ type observer struct {
 	node *chainfabric.Node
 }
 
-var instance blockIDGenerator
-var observerInstance observer
+var (
+	blockIDGeneratorInstance blockIDGenerator
+	observerInstance         observer
+)
 
 // GetObserver constructor for observer
 func GetObserver() observer {
@@ -32,10 +34,10 @@ func GetObserver() observer {
 
 // getBlockIDGenerator constructor for BlockIDGenerator
 func getBlockIDGenerator() blockIDGenerator {
-	if instance == (blockIDGenerator{}) {
-		instance = blockIDGenerator{0}
+	if blockIDGeneratorInstance == (blockIDGenerator{}) {
+		blockIDGeneratorInstance = blockIDGenerator{0}
 	}
-	return instance
+	return blockIDGeneratorInstance
 }
 func (gen blockIDGenerator) generate() uint64 {
 	gen.lastID++
@@ -47,7 +49,7 @@ type Block struct {
 	id            uint64
 	lastBlockHash [32]byte
 	nonce         uint64
-	payload       string
+	payload       Transaction
 	difficulty    uint8
 	timestamp     uint64
 	hash          [32]byte
@@ -55,7 +57,7 @@ type Block struct {
 
 // NewBlock constructor for Block
 func NewBlock(
-	lastBlockHash [32]byte, payload string,
+	lastBlockHash [32]byte, payload Transaction,
 	difficulty uint8, timestamp uint64) Block {
 	var slice = make([]byte, 32)
 	var hash [32]byte
@@ -72,15 +74,15 @@ func NewBlock(
 }
 
 // NewGenesisBlock constructor for Block if Genesis
-func NewGenesisBlock(
-	payload string, timestamp uint64) Block {
+func NewGenesisBlock(timestamp uint64) Block {
 	var slice = make([]byte, 32)
 	var hash [32]byte
 	copy(hash[:], slice)
+	emptyTransaction := Transaction{"Coinbase", "Coinbase", 0}
 	blk := Block{getBlockIDGenerator().generate(),
 		hash,
 		0,
-		payload,
+		emptyTransaction,
 		0,
 		timestamp,
 		hash}
@@ -99,7 +101,7 @@ func (blk *Block) doHash() {
 		id            uint64
 		lastBlockHash [32]byte
 		nonce         uint64
-		payload       string
+		payload       Transaction
 		difficulty    uint8
 		timestamp     uint64
 	}

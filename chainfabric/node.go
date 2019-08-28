@@ -74,7 +74,7 @@ func (nd *Node) Connect() {
 		flds := strings.Fields(message)
 		if flds[0] == "TRANSACTION" {
 			// execute callback to start mining
-			nd.newTransactionCallback(message)
+			nd.newTransactionCallback(flds[1])
 		} else {
 			// send nonce to tracker
 			nd.response = message

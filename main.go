@@ -8,19 +8,15 @@ import (
 
 func main() {
 	fmt.Println("Hello, WebAssembly!")
-	// var bobNode = chainfabric.NewNode("127.0.0.1", 8081)
-	// go bobNode.Connect()
 
-	// time.Sleep(5 * time.Second)
-	// fmt.Println("[main] Response")
-	// fmt.Println(bobNode.GetResponse())
-	var gblock = blockchain.NewGenesisBlock("Hello Block", 1000)
+	var gblock = blockchain.NewGenesisBlock(1000)
 	fmt.Printf("%s\n hashes to\n %x\n",
 		fmt.Sprintf("%v", gblock), gblock)
 
 	fmt.Printf("blockhash: %x\n", gblock.GetHash())
 
-	var nblock = blockchain.NewBlock(gblock.GetHash(), "Hello Block", 21, 1010)
+	tr := blockchain.Transaction{"Alice", "Bob", 50}
+	var nblock = blockchain.NewBlock(gblock.GetHash(), tr, 21, 1010)
 	fmt.Printf("%s\n hashes to\n %x\n",
 		fmt.Sprintf("%v", nblock), nblock)
 }
