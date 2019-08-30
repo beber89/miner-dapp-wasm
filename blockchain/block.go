@@ -27,7 +27,10 @@ func GetObserver() observer {
 	if observerInstance == (observer{}) {
 		nd := chainfabric.NewNode("127.0.0.1", 8081)
 		observerInstance = observer{&nd}
-		go observerInstance.node.Connect()
+		if success := observerInstance.node.Connect(); !success {
+			panic("Could not connect to tracker")
+		}
+		go observerInstance.node.StartListening()
 	}
 	return observerInstance
 }
@@ -92,6 +95,11 @@ func NewGenesisBlock(timestamp uint64) Block {
 // GetHash ...
 func (blk *Block) GetHash() [32]byte {
 	return blk.hash
+}
+
+// GetTransaction returns the transaction described by this block
+func (blk Block) GetTransaction() Transaction {
+	return blk.payload
 }
 
 // doHash calculates the hash of the block

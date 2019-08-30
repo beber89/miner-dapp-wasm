@@ -61,11 +61,20 @@ func NewNode(toIP string, toPort uint16) Node {
 }
 
 // Connect connects node to remote server via TCP
-func (nd *Node) Connect() {
+func (nd *Node) Connect() bool {
 	// connect to this socket
-	nd.connection, _ = net.Dial("tcp", fmt.Sprintf("%s:%d", nd.toIP, nd.toPort))
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", nd.toIP, nd.toPort))
+	nd.connection = conn
+	if err != nil {
+		return false
+	}
 	fmt.Println("Connected to tracker !")
 	fmt.Fprintf(nd.connection, "Connect\n")
+	return true
+}
+
+// StartListening waits for data from tracker
+func (nd *Node) StartListening() {
 	for {
 		// listen for reply
 		fmt.Println("Shall read from server: ")

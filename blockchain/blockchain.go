@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"fmt"
+	"time"
 )
 
 const diff uint8 = 22
@@ -36,12 +37,11 @@ func NewBlockchain() Blockchain {
 	return chn
 }
 
-func (chn *Blockchain) RequestTransaction(
-	trans Transaction, timestamp uint64) {
+func (chn *Blockchain) RequestTransaction(trans Transaction) {
 	// observer send request to chainfabric
-	trMsg := TransactionMessage{trans, timestamp}
+	trMsg := TransactionMessage{trans, uint64(time.Now().Unix())}
 	GetObserver().node.SendMessage("TRANSACTION " + trMsg.Serialize())
-	blk := NewBlock(chn.chain[len(chn.chain)-1].GetHash(), trMsg.Trans, diff, timestamp)
+	blk := NewBlock(chn.chain[len(chn.chain)-1].GetHash(), trMsg.Trans, diff, uint64(time.Now().Unix()))
 	fmt.Printf("%s\n hashes to\n %x\n",
 		fmt.Sprintf("%v", blk), blk)
 	chn.chain = append(chn.chain, blk)
