@@ -3,7 +3,6 @@ package dapp_test
 import (
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/beber89/miner-dapp-wasm/wallet"
 )
@@ -17,7 +16,6 @@ func TestReward(t *testing.T) {
 
 func TestPayTo(t *testing.T) {
 	wlt := wallet.NewWallet("Alice")
-	time.Sleep(1 * time.Second)
 	wlt.Reward(100)
 	t.Logf("chain is\n%s\n\n", fmt.Sprintf("%v", wlt.GetBlockchain().GetChain()))
 	wlt.PayTo("Bob", 40)

@@ -66,6 +66,8 @@ func (nd *Node) Connect() bool {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", nd.toIP, nd.toPort))
 	nd.connection = conn
 	if err != nil {
+		fmt.Println("[Node Connect] Could not connect to tracker")
+		fmt.Println(err)
 		return false
 	}
 	fmt.Println("Connected to tracker !")
