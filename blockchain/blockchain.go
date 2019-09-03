@@ -5,7 +5,8 @@ import (
 	"time"
 )
 
-const diff uint8 = 22
+// const diff uint8 = 22
+const diff uint8 = 16
 
 type Blockchain struct {
 	chain []Block

@@ -1,2 +1,3 @@
 .todo.txt
 *.wasm
+node_modules/*

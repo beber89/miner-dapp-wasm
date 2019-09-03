@@ -30,7 +30,6 @@ func GetObserver() observer {
 		if success := observerInstance.node.Connect(); !success {
 			panic("Could not connect to tracker")
 		}
-		go observerInstance.node.StartListening()
 	}
 	return observerInstance
 }

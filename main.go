@@ -23,5 +23,7 @@ func main() {
 	c := make(chan struct{}, 0)
 	fmt.Println("Hello, WebAssembly!")
 	registerCallbacks()
+	// nd := chainfabric.NewNode("127.0.0.1", 8081)
+	// nd.Connect()
 	<-c
 }
