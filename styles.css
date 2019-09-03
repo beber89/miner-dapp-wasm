@@ -1,0 +1,32 @@
+#chain {
+  width: 80vw;
+  background-color:azure;
+  border-width: 2px;
+  border-style: solid;
+  margin-left: 1px;
+  overflow: hidden; 
+  position: relative;
+}
+.block {
+  width: 20vw;
+  float: left;
+  background-color: powderblue;
+  border-width: 2px;
+  border-style: solid;
+  margin-left: 1px;
+}
+.cell {
+  margin-top: 1px;
+  border-width: 0.5px;
+  border-style: solid;
+  padding-left: 1px;
+  overflow-wrap: break-word;
+}
+
+.color-lightblue {
+  background-color: lightblue;
+}
+
+.color-powderblue {
+  background-color: powderblue;
+}

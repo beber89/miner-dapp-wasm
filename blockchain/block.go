@@ -75,6 +75,16 @@ func NewBlock(
 	return blk
 }
 
+// GetNonce returns the nonce that solved the block
+func (blk Block) GetNonce() uint64 {
+	return blk.nonce
+}
+
+// GetLastBlockHash returns the hash of the previous block
+func (blk Block) GetLastBlockHash() [32]byte {
+	return blk.lastBlockHash
+}
+
 // NewGenesisBlock constructor for Block if Genesis
 func NewGenesisBlock(timestamp uint64) Block {
 	var slice = make([]byte, 32)

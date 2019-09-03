@@ -46,4 +46,5 @@ func (chn *Blockchain) RequestTransaction(trans Transaction) {
 	fmt.Printf("%s\n hashes to\n %x\n",
 		fmt.Sprintf("%v", blk), blk)
 	chn.chain = append(chn.chain, blk)
+	fmt.Printf("chain is %v\n", chn.chain)
 }
