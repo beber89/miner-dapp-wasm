@@ -4,47 +4,8 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/rand"
-
-	"github.com/beber89/miner-dapp-wasm/chainfabric"
+	"syscall/js"
 )
-
-// blockIDGenerator is meant to emulate as a static class member for Block struct
-type blockIDGenerator struct {
-	lastID uint64
-}
-
-type observer struct {
-	node *chainfabric.Node
-}
-
-var (
-	blockIDGeneratorInstance blockIDGenerator
-	observerInstance         observer
-)
-
-// GetObserver constructor for observer
-func GetObserver() observer {
-	if observerInstance == (observer{}) {
-		nd := chainfabric.NewNode("127.0.0.1", 8081)
-		observerInstance = observer{&nd}
-		if success := observerInstance.node.Connect(); !success {
-			panic("Could not connect to tracker")
-		}
-	}
-	return observerInstance
-}
-
-// getBlockIDGenerator constructor for BlockIDGenerator
-func getBlockIDGenerator() blockIDGenerator {
-	if blockIDGeneratorInstance == (blockIDGenerator{}) {
-		blockIDGeneratorInstance = blockIDGenerator{0}
-	}
-	return blockIDGeneratorInstance
-}
-func (gen blockIDGenerator) generate() uint64 {
-	gen.lastID++
-	return gen.lastID
-}
 
 // Block is the building entity for the blockchain
 type Block struct {
@@ -156,15 +117,49 @@ func (blk *Block) mine() {
 		if !blk.tryNonce(nnc) {
 			if !GetObserver().node.ResponseEmpty() {
 				if blk.tryNonce(GetObserver().node.GetResponse()) {
-					fmt.Printf("nonce is %d\n", blk.nonce)
+					js.Global().Call("alert", fmt.Sprintf("nonce mined by other user: %d", nnc))
 					break
 				}
 			}
 			continue
 		}
-		fmt.Printf("I got it, nonce is %s\n", fmt.Sprintf("%d", blk.nonce))
+		js.Global().Call("alert", fmt.Sprintf("nonce mined successfully by this user %d\n", blk.nonce))
 		// found hash > notify other nodes
 		(GetObserver().node).SendResponse(nnc)
 		break
 	}
 }
+
+// This section of block.go concerned with drawing the block onto the webpage ---
+
+type blockShape struct {
+	cells []js.Value
+}
+
+func (v *blockShape) newCellContent(content string) {
+	document := js.Global().Get("document")
+	cell := document.Call("createElement", "div")
+	cell.Set("className", js.ValueOf("cell color-lightblue"))
+	cell.Set("innerHTML", content)
+	v.cells = append(v.cells, cell)
+}
+
+// Draw returns the js Object which is going to be added to the dom
+func (blk Block) Draw() js.Value {
+	shape := blockShape{make([]js.Value, 0)}
+	tr := blk.GetTransaction()
+	shape.newCellContent(fmt.Sprintf("%s  ->  %s: %0.2f", tr.From, tr.To, tr.Amount))
+	shape.newCellContent(fmt.Sprintf("%x", blk.GetLastBlockHash()))
+	shape.newCellContent(fmt.Sprintf("%d", blk.GetNonce()))
+	shape.newCellContent(fmt.Sprintf("%x", blk.GetHash()))
+
+	document := js.Global().Get("document")
+	div := document.Call("createElement", "div")
+	div.Set("className", js.ValueOf("block"))
+	for _, c := range shape.cells {
+		div.Call("appendChild", c)
+	}
+	return div
+}
+
+// ------------------------------------------------------------------------------------------

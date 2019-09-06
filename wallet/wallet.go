@@ -15,10 +15,14 @@ func NewWallet(username string) Wallet {
 	return Wallet{username, blockchain.NewBlockchain()}
 }
 
+// SetDifficulty sets the difficulty value for the PoW done by block mining
+func (wlt Wallet) SetDifficulty(diff uint8) {
+	blockchain.SetDifficulty(diff)
+}
+
 // Reward transfers amt to owner of wallet from coinbase
 func (wlt *Wallet) Reward(amt float64) {
 	tr := blockchain.Transaction{"Coinbase", wlt.username, amt}
-	// TODO: Generate Time here as uint64
 	wlt.blockchain.RequestTransaction(tr)
 }
 

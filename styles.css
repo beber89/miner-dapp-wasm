@@ -1,15 +1,17 @@
 #chain {
-  width: 80vw;
+  width: 100%;
   background-color:azure;
   border-width: 2px;
   border-style: solid;
   margin-left: 1px;
-  overflow: hidden; 
+  overflow-x: auto; 
+  overflow-y: hidden;
   position: relative;
+  white-space:nowrap;
 }
 .block {
+  display: inline-block;
   width: 20vw;
-  float: left;
   background-color: powderblue;
   border-width: 2px;
   border-style: solid;
@@ -20,8 +22,48 @@
   border-width: 0.5px;
   border-style: solid;
   padding-left: 1px;
+  white-space: normal;
   overflow-wrap: break-word;
 }
+
+#blockchain-placeholder {
+  height: 30ex;
+}
+
+.mg-top {
+  margin-top: 1ex;
+}
+
+.mg-left {
+  margin-left: 1ex;
+}
+
+.w-9 {
+  width: 72%;
+  float: left;
+}
+
+.w-6 {
+  width: 47%;
+  float: left;
+}
+
+.w-4 {
+  width: 31%;
+  float: left;
+}
+
+.w-3 {
+  width: 22%;
+  float: left;
+}
+
+
+
+.container {
+  padding: 3ex;
+}
+
 
 .color-lightblue {
   background-color: lightblue;
@@ -29,4 +71,22 @@
 
 .color-powderblue {
   background-color: powderblue;
+}
+
+select {
+  margin-left: 1ex;
+}
+
+.clear {
+  clear: left;
+}
+
+.slider {
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
 }

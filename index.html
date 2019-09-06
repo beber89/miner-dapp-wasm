@@ -9,8 +9,52 @@
 				go.run(result.instance);
 			});
 		</script>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" 
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+
 	</head>
 	<body>
-		<button onClick="reward()">Reward</button>
+		<div class="w-3 container">
+			<div class="w-6">
+				<select onchange="changeUser(this.value)" class="w-9 color-lightblue">
+						<option value="0">User👨🏻‍💻:</option>
+						<option value="Alice">Alice🙍‍</option>
+						<option value="Bob">Bob👨‍💼</option>
+				</select>
+			</div>
+
+			<div class="w-6">
+				<input type="range" min="0" max="128" value="16" class="slider" id="diffRange">
+			</div>
+			<div class="clear"></div>
+				<button onClick="reward()" class="w-6 color-lightblue mg-top">Reward 💰</button>
+				<button disabled id="BuyBtn" onClick="buyCommodity()" class="w-6 color-lightblue mg-top mg-left">
+					Buy 🍎 🍌
+				</button>
+			<div class="clear"></div>
+			<label class="w-6 mg-top">Difficulty ⚙️:</label>
+			<label id="diffLabel" class="w-3 mg-top mg-left">
+				
+			</label>
+			<div class="clear"></div>
+			<label class="w-6 mg-top">Networth 💵:</label>
+			<label id="networth" class="w-3 mg-top mg-left">
+				
+			</label>
+			<div class="clear"></div>
+		</div>
+		<div id="blockchain-placeholder" class="w-9">
+			<!-- Blockchain schematic goes here  -->
+		</div>
+
+
+		<script>
+				// Update the current slider value (each time you drag the slider handle)
+				$("#diffRange").on("change mousemove", function() {
+				  $("#diffLabel").html($(this).val());
+					sendSliderValToWasm($(this).val());
+				});
+			</script>
 	</body>
 </html>
