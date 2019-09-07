@@ -29,6 +29,7 @@ wsServer.on('request', function(request) {
     // all messages from users here.
     connection.on('message', function(message) {
       console.log(sockets.length)
+      console.log("message received "+message)
         sockets.forEach(function(s, index, array) {
           if (message.type === 'utf8') {
             broadcastData = message.utf8Data

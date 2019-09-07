@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"strconv"
 	"syscall/js"
 )
@@ -29,6 +28,8 @@ func changeUser(this js.Value, args []js.Value) interface{} {
 			options.Index(i).Set("disabled", js.ValueOf(true))
 		}
 		User = args[0].String()
+		// this call initializes the User's wallet hence so are the node connections
+		GetWallet()
 		if User == "Alice" {
 			merchant = "Bob"
 		} else {
@@ -41,34 +42,42 @@ func changeUser(this js.Value, args []js.Value) interface{} {
 			price = 20
 			document.Call("getElementById", "BuyBtn").Set("innerHTML", "Buy Apples  🍎")
 		}
-		document.Call("getElementById", "networth").Set("innerHTML", GetWallet().Networth())
 	}
 	return js.Null()
 }
 
 func buyCommodity(this js.Value, args []js.Value) interface{} {
+	if User == "" {
+		return js.Null()
+	}
 	success := GetWallet().PayTo(merchant, price)
 	if !success {
 		js.Global().Call("alert", "Insufficient Crypsys")
 	}
-	renderPage(*GetWallet())
 	return js.Null()
 }
 
 func networth(this js.Value, args []js.Value) interface{} {
+	if User == "" {
+		return js.Null()
+	}
 	return js.ValueOf(GetWallet().Networth())
 }
 
 func reward(this js.Value, args []js.Value) interface{} {
+	if User == "" {
+		return js.Null()
+	}
 	go func() {
 		GetWallet().Reward(10)
-		renderPage(*GetWallet())
 	}()
-	fmt.Println("go escaped")
 	return js.Null()
 }
 
 func sendSliderValToWasm(this js.Value, args []js.Value) interface{} {
+	if User == "" {
+		return js.Null()
+	}
 	diff, _ := strconv.Atoi(args[0].String())
 	GetWallet().SetDifficulty(uint8(diff))
 	return js.Null()

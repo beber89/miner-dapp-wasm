@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"syscall/js"
+	"time"
 )
 
 // Block is the building entity for the blockchain
@@ -113,15 +114,34 @@ func (blk *Block) tryNonce(nnc uint64) bool {
 }
 
 func (blk *Block) mine() {
-	for nnc := uint64(0); nnc <= ^uint64(0); nnc = nnc + uint64(rand.Intn(5)+1) {
+	rnd := rand.New(rand.NewSource(int64(time.Now().Nanosecond())))
+	for nnc, i := uint64(0), 0; nnc <= ^uint64(0); nnc, i = nnc+uint64(rnd.Intn(5)+1), i+1 {
 		if !blk.tryNonce(nnc) {
-			if !GetObserver().node.ResponseEmpty() {
-				if blk.tryNonce(GetObserver().node.GetResponse()) {
-					js.Global().Call("alert", fmt.Sprintf("nonce mined by other user: %d", nnc))
-					break
+			if i%500 == 0 {
+				fmt.Println("Go sleep ")
+				<-time.After(70 * time.Microsecond)
+				fmt.Println("woke from sleep  ")
+				if !GetObserver().node.ResponseEmpty() {
+					if blk.tryNonce(GetObserver().node.GetResponse()) {
+						js.Global().Call("alert", fmt.Sprintf("nonce mined by other user: %d", nnc))
+						break
+					}
 				}
 			}
 			continue
+			// select {
+			// case resp := <-GetObserver().node.Chnl:
+			// 	fmt.Println("got signal from chnl")
+			// 	nnnc, _ := strconv.Atoi(resp)
+			// 	if blk.tryNonce(uint64(nnnc)) {
+			// 		js.Global().Call("alert", fmt.Sprintf("nonce mined by other user: %d", nnnc))
+			// 		break
+			// 	} else {
+			// 		continue
+			// 	}
+			// default:
+			// 	continue
+			// }
 		}
 		js.Global().Call("alert", fmt.Sprintf("nonce mined successfully by this user %d\n", blk.nonce))
 		// found hash > notify other nodes

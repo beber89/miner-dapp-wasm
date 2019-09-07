@@ -65,12 +65,14 @@ func (nd *Node) Connect() bool {
 	}))
 	nd.ws.Call("addEventListener", "message", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		message := args[0].Get("data").String()
+		fmt.Println("message received ")
+		fmt.Println(message)
 		flds := strings.Fields(message)
 		if flds[0] == "TRANSACTION" {
 			// execute callback to start mining
 			nd.newTransactionCallback(flds[1])
 		} else {
-			// send nonce to tracker
+			// receive nonce from tracker
 			nd.response = message
 		}
 		return nil

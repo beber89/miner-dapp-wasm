@@ -2,30 +2,31 @@ package blockchain
 
 import "github.com/beber89/miner-dapp-wasm/chainfabric"
 
-// blockIDGenerator is meant to emulate as a static class member for Block struct
-type blockIDGenerator struct {
-	lastID uint64
-}
-
-type observer struct {
+// Observer .
+type Observer struct {
 	node *chainfabric.Node
 }
 
 var (
 	blockIDGeneratorInstance blockIDGenerator
-	observerInstance         observer
+	observerInstance         Observer
 )
 
 // GetObserver constructor for observer
-func GetObserver() observer {
-	if observerInstance == (observer{}) {
+func GetObserver() Observer {
+	if observerInstance == (Observer{}) {
 		nd := chainfabric.NewNode("127.0.0.1", 8081)
-		observerInstance = observer{&nd}
+		observerInstance = Observer{&nd}
 		if success := observerInstance.node.Connect(); !success {
 			panic("Could not connect to tracker")
 		}
 	}
 	return observerInstance
+}
+
+// blockIDGenerator is meant to emulate as a static class member for Block struct
+type blockIDGenerator struct {
+	lastID uint64
 }
 
 // getBlockIDGenerator constructor for BlockIDGenerator
