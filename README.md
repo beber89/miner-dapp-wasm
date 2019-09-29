@@ -1,10 +1,6 @@
 # miner-dapp-wasm
-distributed app example for tcp blockchain deployed to webassembly
+Distributed app example in Golang for blockchain deployed as a WebAssembly utilizing a js websocket.
 
-
-@[find code here](https://gist.github.com/beber89/a915b254155a409a05eedb4ee1e454d0)
-
-Right on the beginning a `WaitGroup` variable is declared so that the application does not terminate at the end of `main()`. Hence the application continues running to respond to user's inputs accordingly which is being captured by calling `RegisterCallbacks()`.
 
 
 # Example run
