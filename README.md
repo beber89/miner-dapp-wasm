@@ -1,5 +1,5 @@
 # miner-dapp-wasm
-Distributed app example in Golang for blockchain deployed as a WebAssembly utilizing a js websocket.
+Distributed app example in Golang for blockchain deployed as a WebAssembly utilizing a js websocket. Detailed explanation of the code is found in this article https://www.codementor.io/beber89/webassembly-to-run-blockchain-using-go-yuw6f9u7m.
 
 
 
